@@ -1,0 +1,29 @@
+body{
+    padding: 20px;
+}
+img{
+    width: 50%;
+    object-fit: cover;
+}
+
+#Screen{
+    display: flex;
+}
+
+#Board{
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    max-width: 130vh;
+}
+
+#MyCards{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 140px;
+    gap: 10px;
+}
+
+.my-card{
+    height: 100px;
+}
