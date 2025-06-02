@@ -47,6 +47,8 @@
       img.setAttribute("name", image);
       img.style.transform = 'rotate(90deg)';
       img.classList.add('board-card');
+      // img.onclick(onCardSelection(rowIndex,columnIndex));
+      img.addEventListener('click', () => onCardSelection(rowIndex, columnIndex));
       board.appendChild(img);
     });
   })
@@ -178,34 +180,81 @@ for (let i = 0; i < 6; i++) {
   myCards.appendChild(img);
 }
 
-const availableSlots = [];
+let availableSlots = [];
 
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     availableSlots.push([i, j]);
   }
 }
-const myCardElements = myCards.querySelectorAll('.my-card');
-const boardCardElements = board.querySelectorAll('.board-card');
+let myCardElements = myCards.querySelectorAll('.my-card');
+let boardCardElements = board.querySelectorAll('.board-card');
 
-myCardElements.forEach(card => {
-  boardCardElements.forEach(slot => {
+function renderBoard() {
+  for (let i = 0; i < boardCardElements.length; i++) {
+    boardCardElements[i].style.border = '2px solid black';
+  }
+  console.log("my card ele render: " + JSON.stringify(myCardElements));
+  myCardElements.forEach(card => {
+    boardCardElements.forEach(slot => {
 
-    const slotId = slot.id;
-    const idParts = slotId.split('-');
-    const rowIndex = parseInt(idParts[0]);
-    const columnIndex = parseInt(idParts[1]);
-    // console.log("slotName: " + slot.getAttribute("name") + ", Card name: " + card.getAttribute("name") + ", " + rowIndex + " " + columnIndex);
+      const slotId = slot.id;
+      const idParts = slotId.split('-');
+      const rowIndex = parseInt(idParts[0]);
+      const columnIndex = parseInt(idParts[1]);
+      // console.log("slotName: " + slot.getAttribute("name") + ", Card name: " + card.getAttribute("name") + ", " + rowIndex + " " + columnIndex);
 
-    const isSlotAvailable = availableSlots.some(
-      ([availableRow, availableColumn]) => 
-      // console.log(availableRow + " " + rowIndex + " " + availableColumn + " " + columnIndex)
-        availableRow === rowIndex && availableColumn === columnIndex 
-    );
+      const isSlotAvailable = availableSlots.some(
+        ([availableRow, availableColumn]) => 
+        // console.log(availableRow + " " + rowIndex + " " + availableColumn + " " + columnIndex)
+          availableRow === rowIndex && availableColumn === columnIndex 
+      );
 
-    if (isSlotAvailable && slot.getAttribute("name") === card.getAttribute("name")){
-      slot.style.transform = 'rotate(90deg)'; // Scale by 1.2, keep rotation
-      slot.style.border = '2px solid gold';
-    }
-  })
-})
+      if (isSlotAvailable && slot.getAttribute("name") === card.getAttribute("name")){
+        slot.style.transform = 'rotate(90deg)'; // Scale by 1.2, keep rotation
+        slot.style.border = '2px solid gold';
+      }
+    });
+  });
+}
+
+let p1_slots = [];
+function onCardSelection(selectedRowIndex, selectedColumnIndex) {
+  myCardElements.forEach((card, myCardIndex) => {
+    boardCardElements.forEach(slot => {
+
+      const slotId = slot.id;
+      const idParts = slotId.split('-');
+      const rowIndex = parseInt(idParts[0]);
+      const columnIndex = parseInt(idParts[1]);
+      // console.log("slotName: " + slot.getAttribute("name") + ", Card name: " + card.getAttribute("name") + ", " + rowIndex + " " + columnIndex);
+
+      const isSlotAvailable = availableSlots.some(
+        ([availableRow, availableColumn]) => 
+        // console.log(availableRow + " " + rowIndex + " " + availableColumn + " " + columnIndex)
+          availableRow === rowIndex && availableColumn === columnIndex 
+      );
+
+      if (isSlotAvailable && slot.getAttribute("name") === card.getAttribute("name")
+        && rowIndex === selectedRowIndex && columnIndex === selectedColumnIndex){
+        
+        
+        p1_slots.push([selectedRowIndex, selectedColumnIndex]);
+        availableSlots = availableSlots.filter(
+          cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
+          myCardElements[myCardIndex].remove();
+          console.log("my card ele dele: " + JSON.stringify(myCardElements));
+      }
+    });
+  });
+  // console.log("p1_slots: " + p1_slots);
+  // console.log("avai slot: " + availableSlots);
+  renderBoard();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("Page is fully loaded (HTML parsed)");
+  // Your rendering or setup code here
+  renderBoard();
+});
+

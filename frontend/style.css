@@ -1,19 +1,33 @@
 body{
     padding: 20px;
 }
+
 img{
     width: 50%;
+    /* height: 80%; */
     object-fit: cover;
 }
 
 #Screen{
     display: flex;
+    justify-content: space-around;
+    
 }
 
 #Board{
     display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    max-width: 130vh;
+    grid-template-columns: repeat(10, 75px);
+
+    max-width: 100vh;
+    gap: 0px;
+
+    border: 2px solid black;
+    padding: 30px;
+}
+
+.board-card{
+    margin: 0px;
+    border: 2px solid black;
 }
 
 #MyCards{
@@ -22,8 +36,13 @@ img{
     align-items: center;
     min-width: 140px;
     gap: 10px;
+
+    border: 2px solid black;
+    padding: 10px;
 }
 
 .my-card{
-    height: 100px;
+    width: 60px;
+
+    border: 2px solid black;
 }
