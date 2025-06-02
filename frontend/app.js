@@ -168,16 +168,22 @@
   "spades_jack.svg",
   "spades_jack.svg",
 ];
+
 deck = shuffleArray(deck);
-const myCards = document.getElementById("MyCards");
+let myCards = [];
+const myCardElements = document.getElementById("MyCards"); 
+
 for (let i = 0; i < 6; i++) {
-  const image = deck[i];
+  const image = deck[deck.length-1];
+  myCards.push(image);
+  deck.pop();
+  
   const img = document.createElement("img");
   img.src = `/images/${image}`;
   img.alt = image;
   img.setAttribute("name", image);
   img.classList.add('my-card');
-  myCards.appendChild(img);
+  myCardElements.appendChild(img);
 }
 
 let availableSlots = [];
@@ -187,15 +193,28 @@ for (let i = 0; i < 10; i++) {
     availableSlots.push([i, j]);
   }
 }
-let myCardElements = myCards.querySelectorAll('.my-card');
+// let myCardElements = myCards.querySelectorAll('.my-card');
 let boardCardElements = board.querySelectorAll('.board-card');
 
 function renderBoard() {
   for (let i = 0; i < boardCardElements.length; i++) {
     boardCardElements[i].style.border = '2px solid black';
   }
+
+  myCardElements.innerHTML = '';
+  myCards.forEach(imageName => {
+        const img = document.createElement("img");
+        img.src = `images/${imageName}`;
+        img.alt = imageName;
+        img.setAttribute("name", imageName);
+        img.classList.add('my-card');
+
+        myCardElements.appendChild(img);
+    });
+
   console.log("my card ele render: " + JSON.stringify(myCardElements));
-  myCardElements.forEach(card => {
+
+  myCards.forEach(card => {
     boardCardElements.forEach(slot => {
 
       const slotId = slot.id;
@@ -210,7 +229,7 @@ function renderBoard() {
           availableRow === rowIndex && availableColumn === columnIndex 
       );
 
-      if (isSlotAvailable && slot.getAttribute("name") === card.getAttribute("name")){
+      if (isSlotAvailable && slot.getAttribute("name") === card){
         slot.style.transform = 'rotate(90deg)'; // Scale by 1.2, keep rotation
         slot.style.border = '2px solid gold';
       }
@@ -220,7 +239,7 @@ function renderBoard() {
 
 let p1_slots = [];
 function onCardSelection(selectedRowIndex, selectedColumnIndex) {
-  myCardElements.forEach((card, myCardIndex) => {
+  myCards.forEach((card, myCardIndex) => {
     boardCardElements.forEach(slot => {
 
       const slotId = slot.id;
@@ -235,15 +254,18 @@ function onCardSelection(selectedRowIndex, selectedColumnIndex) {
           availableRow === rowIndex && availableColumn === columnIndex 
       );
 
-      if (isSlotAvailable && slot.getAttribute("name") === card.getAttribute("name")
+      if (isSlotAvailable && slot.getAttribute("name") === card
         && rowIndex === selectedRowIndex && columnIndex === selectedColumnIndex){
         
         
         p1_slots.push([selectedRowIndex, selectedColumnIndex]);
         availableSlots = availableSlots.filter(
           cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
-          myCardElements[myCardIndex].remove();
-          console.log("my card ele dele: " + JSON.stringify(myCardElements));
+        // myCardElements[myCardIndex].remove();
+        myCards.splice(myCardIndex,1);
+        myCards.push(deck[deck.length-1]);
+        deck.pop();
+        console.log("my card ele dele: " + JSON.stringify(myCardElements));
       }
     });
   });
