@@ -40,16 +40,26 @@
   const board = document.getElementById('Board');
   CardSequence.forEach((row,rowIndex) => {
     row.forEach((image,columnIndex) => {
+      const cell = document.createElement('div');
+      const token = document.createElement('div');
+      token.classList.add('p1-token');
       const img = document.createElement('img');
+
       img.src = `images/${image}`;
       img.alt = image;
       img.id = `${rowIndex}-${columnIndex}`;
       img.setAttribute("name", image);
       img.style.transform = 'rotate(90deg)';
       img.classList.add('board-card');
+      
       // img.onclick(onCardSelection(rowIndex,columnIndex));
       img.addEventListener('click', () => onCardSelection(rowIndex, columnIndex));
-      board.appendChild(img);
+      cell.appendChild(token);
+      cell.appendChild(img);
+
+      cell.classList.add('cell-content');
+
+      board.appendChild(cell);
     });
   })
 
@@ -194,11 +204,12 @@ for (let i = 0; i < 10; i++) {
   }
 }
 // let myCardElements = myCards.querySelectorAll('.my-card');
-let boardCardElements = board.querySelectorAll('.board-card');
+let boardCardElements = board.querySelectorAll('.cell-content');
+let boardCardImageElements = board.querySelectorAll('.board-card');
 
 function renderBoard() {
-  for (let i = 0; i < boardCardElements.length; i++) {
-    boardCardElements[i].style.border = '2px solid black';
+  for (let i = 0; i < boardCardImageElements.length; i++) {
+    boardCardImageElements[i].style.border = '2px solid black';
   }
 
   myCardElements.innerHTML = '';
@@ -215,7 +226,7 @@ function renderBoard() {
   console.log("my card ele render: " + JSON.stringify(myCardElements));
 
   myCards.forEach(card => {
-    boardCardElements.forEach(slot => {
+    boardCardImageElements.forEach(slot => {
 
       const slotId = slot.id;
       const idParts = slotId.split('-');
@@ -233,14 +244,34 @@ function renderBoard() {
         slot.style.transform = 'rotate(90deg)'; // Scale by 1.2, keep rotation
         slot.style.border = '2px solid gold';
       }
+
     });
+
   });
+
+  boardCardElements.forEach((cell,cellIndex) => {
+    let rowIndex = Math.floor(cellIndex / 10);
+    let columnIndex = cellIndex%10;
+    
+    const isP1TokenPlaced = p1Slots.some(slot => {
+      return (slot[0] === rowIndex && slot[1] === columnIndex);
+    });
+
+    console.log("this is cell: " + cell);
+    const token = cell.querySelector('.p1-token');
+
+    if(isP1TokenPlaced) {
+      token.classList.add('p1-token-visible');
+      console.log("In cell Index: " + cellIndex + "p1 token: " + token);
+    }
+  });
+
 }
 
-let p1_slots = [];
+let p1Slots = [];
 function onCardSelection(selectedRowIndex, selectedColumnIndex) {
   myCards.forEach((card, myCardIndex) => {
-    boardCardElements.forEach(slot => {
+    boardCardImageElements.forEach(slot => {
 
       const slotId = slot.id;
       const idParts = slotId.split('-');
@@ -258,13 +289,14 @@ function onCardSelection(selectedRowIndex, selectedColumnIndex) {
         && rowIndex === selectedRowIndex && columnIndex === selectedColumnIndex){
         
         
-        p1_slots.push([selectedRowIndex, selectedColumnIndex]);
+        p1Slots.push([selectedRowIndex, selectedColumnIndex]);
         availableSlots = availableSlots.filter(
           cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
         // myCardElements[myCardIndex].remove();
         myCards.splice(myCardIndex,1);
         myCards.push(deck[deck.length-1]);
         deck.pop();
+
         console.log("my card ele dele: " + JSON.stringify(myCardElements));
       }
     });

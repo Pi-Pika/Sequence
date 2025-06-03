@@ -46,3 +46,27 @@ img{
 
     border: 2px solid black;
 }
+
+.p1-token{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Adjust to true center */
+    width: 15px; 
+    height: 15px;
+    display: none;
+    background-color: red;
+    border-radius: 50%;
+    z-index: 3;
+    border: 1px solid black;
+}
+
+.p1-token-visible{
+    display: block;
+}
+
+.cell-content{
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
