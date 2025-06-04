@@ -27,11 +27,6 @@ img{
 }
 
 .board-card{
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 0px;
-    border: 2px solid black;
     width: 40px;
     height: 60px;
 }
@@ -56,8 +51,8 @@ img{
 .p1-token{
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Adjust to true center */
+    left: 40%;
+    transform: translate(-50%, -50%); 
     width: 15px; 
     height: 15px;
     display: none;
@@ -73,9 +68,9 @@ img{
 
 .p1-token-in-sequence{
     position: absolute;
-    top: 0;
-    left: 0;
-    /* transform: translate(-50%, -50%); Adjust to true center */
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
     width: 60px;
     height: 40px;
     border: 2px solid black;
@@ -83,7 +78,7 @@ img{
     display: none;
     background-color: lightgreen;
     z-index: 2;
-    /* border: 1px solid black; */
+    
 }
 
 .cell-content{
@@ -95,4 +90,8 @@ img{
 
 .set-border-gold{
     border: 2 px solid gold;
+}
+
+.two-eyed-card{
+
 }

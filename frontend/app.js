@@ -37,6 +37,12 @@
     ["sequence.png", "diamonds_ace.svg", "diamonds_king.svg", "diamonds_queen.svg", "diamonds_10.svg", "diamonds_9.svg", "diamonds_8.svg", "diamonds_7.svg", "diamonds_6.svg", "sequence.png"],
   ];
 
+const twoEyedJacks = ["diamonds_jack.svg", "clubs_jack.svg"];
+const oneEyedJacks = [];
+const sequenceNamedCells = [[0,0],[0,9],[9,0],[9,9]];
+let isTwoEyedJackSelected = false;
+let currentTwoEyedJackIndex = -1;
+
   const board = document.getElementById('Board');
   CardSequence.forEach((row,rowIndex) => {
     row.forEach((image,columnIndex) => {
@@ -198,7 +204,28 @@ for (let i = 0; i < 6; i++) {
   img.alt = image;
   img.setAttribute("name", image);
   img.classList.add('my-card');
+  if(twoEyedJacks.includes(image)){
+    img.classList.add('two-eyed-card');
+    img.addEventListener('click', () => onTwoEyedCardSelection(i));
+  }
   myCardElements.appendChild(img);
+}
+
+function onTwoEyedCardSelection(index){
+  isTwoEyedJackSelected = true;
+  currentTwoEyedJackIndex = index;
+  boardCardImageElements.forEach(boardCardImage => {
+    const boardCardId = boardCardImage.id;
+    const idParts = boardCardId.split('-');
+    const rowIndex = parseInt(idParts[0]);
+    const columnIndex = parseInt(idParts[1]);
+
+    if (containsCell(availableSlots, [rowIndex, columnIndex])
+        && !containsCell(sequenceNamedCells,[rowIndex, columnIndex])) {
+      boardCardImage.style.border = "2px solid gold";
+    }
+  });
+  
 }
 
 let availableSlots = [];
@@ -208,6 +235,10 @@ for (let i = 0; i < 10; i++) {
     availableSlots.push([i, j]);
   }
 }
+sequenceNamedCells.forEach(sequenceNamedCell => {
+  availableSlots = availableSlots.filter(cell => (cell[0] !== sequenceNamedCell[0] ||  cell[1] !== sequenceNamedCell[1]));
+});
+
 // let myCardElements = myCards.querySelectorAll('.my-card');
 let boardCardElements = board.querySelectorAll('.cell-content');
 let boardCardImageElements = board.querySelectorAll('.board-card');
@@ -219,12 +250,17 @@ function renderBoard() {
   }
 
   myCardElements.innerHTML = '';
-  myCards.forEach(imageName => {
+  myCards.forEach((imageName, i) => {
         const img = document.createElement("img");
         img.src = `images/${imageName}`;
         img.alt = imageName;
         img.setAttribute("name", imageName);
         img.classList.add('my-card');
+
+        if(twoEyedJacks.includes(imageName)){
+          img.classList.add('two-eyed-card');
+          img.addEventListener('click', () => onTwoEyedCardSelection(i));
+        }
 
         myCardElements.appendChild(img);
     });
@@ -280,8 +316,10 @@ function renderBoard() {
         const rowIndex = parseInt(idParts[0]);
         const columnIndex = parseInt(idParts[1]);
 
-        if(sequencedCell[0] === rowIndex && sequencedCell[1] === columnIndex){
-          boardCardInSequence.style.display = 'block';
+        if(sequencedCell[0] === rowIndex 
+          && sequencedCell[1] === columnIndex
+          && !containsCell(sequenceNamedCells, [rowIndex, columnIndex])){
+            boardCardInSequence.style.display = 'block';
         }
       });
     });
@@ -289,39 +327,49 @@ function renderBoard() {
 
 }
 
-let p1Slots = [];
+// let p1Slots = [];
+let p1Slots = [[0,1],[0,2],[0,3] ];
+
 function onCardSelection(selectedRowIndex, selectedColumnIndex) {
-  myCards.forEach((card, myCardIndex) => {
-    boardCardImageElements.forEach(slot => {
-
-      const slotId = slot.id;
-      const idParts = slotId.split('-');
-      const rowIndex = parseInt(idParts[0]);
-      const columnIndex = parseInt(idParts[1]);
-      // console.log("slotName: " + slot.getAttribute("name") + ", Card name: " + card.getAttribute("name") + ", " + rowIndex + " " + columnIndex);
-
-      const isSlotAvailable = availableSlots.some(
-        ([availableRow, availableColumn]) => 
-        // console.log(availableRow + " " + rowIndex + " " + availableColumn + " " + columnIndex)
-          availableRow === rowIndex && availableColumn === columnIndex 
-      );
-
-      if (isSlotAvailable && slot.getAttribute("name") === card
-        && rowIndex === selectedRowIndex && columnIndex === selectedColumnIndex){
-        
-        
-        p1Slots.push([selectedRowIndex, selectedColumnIndex]);
-        availableSlots = availableSlots.filter(
-          cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
-        // myCardElements[myCardIndex].remove();
-        myCards.splice(myCardIndex,1);
-        myCards.push(deck[deck.length-1]);
-        deck.pop();
-
-        // console.log("my card ele dele: " + JSON.stringify(myCardElements));
-      }
+  if (!isTwoEyedJackSelected) {
+    myCards.forEach((card, myCardIndex) => {
+      boardCardImageElements.forEach(slot => {
+        const slotId = slot.id;
+        const idParts = slotId.split('-');
+        const rowIndex = parseInt(idParts[0]);
+        const columnIndex = parseInt(idParts[1]);
+        // console.log("slotName: " + slot.getAttribute("name") + ", Card name: " + card.getAttribute("name") + ", " + rowIndex + " " + columnIndex);
+        const isSlotAvailable = availableSlots.some(
+          ([availableRow, availableColumn]) => 
+          // console.log(availableRow + " " + rowIndex + " " + availableColumn + " " + columnIndex)
+            availableRow === rowIndex && availableColumn === columnIndex 
+        );
+        if (isSlotAvailable && slot.getAttribute("name") === card
+          && rowIndex === selectedRowIndex && columnIndex === selectedColumnIndex){
+          
+            p1Slots.push([selectedRowIndex, selectedColumnIndex]);
+            availableSlots = availableSlots.filter(
+              cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
+            myCards.splice(myCardIndex,1);
+            myCards.push(deck[deck.length-1]);
+            deck.pop();
+            // console.log("my card ele dele: " + JSON.stringify(myCardElements));
+        }
+      });
     });
-  });
+  }
+  else{
+    if(containsCell(availableSlots, [selectedRowIndex, selectedColumnIndex])){
+      p1Slots.push([selectedRowIndex, selectedColumnIndex]);
+      availableSlots = availableSlots.filter(
+        cell => (cell[0] !== selectedRowIndex ||  cell[1] !== selectedColumnIndex));
+      myCards.splice(currentTwoEyedJackIndex,1);
+      myCards.push(deck[deck.length-1]);
+      deck.pop();
+    }
+  currentTwoEyedJackIndex = -1;
+  isTwoEyedJackSelected = false;
+  }
   // console.log("p1_slots: " + p1_slots);
   // console.log("avai slot: " + availableSlots);
   renderBoard();
@@ -357,6 +405,10 @@ function checkSequence() {
   let x = 0, y = 0;
   let vis = Array.from({ length: 10 }, () => Array(10).fill(0));
   let direction = "right";
+  p1Slots.push([0,0]);
+  p1Slots.push([0,9]);
+  p1Slots.push([9,0]);
+  p1Slots.push([9,9]);
 
   while (!vis[x][y]) {
     const directions = [
@@ -400,6 +452,7 @@ function checkSequence() {
           if (overlap <= 1) {
             sequences.push(potentialSequence);
             console.log("Sequence Found:", potentialSequence);
+            p1Slots.splice(p1Slots.length-4, 4);
             return;
           }
         }
@@ -431,4 +484,8 @@ function checkSequence() {
       x++;
     }
   }
+  p1Slots.splice(p1Slots.length-4, 4);
 }
+
+
+
