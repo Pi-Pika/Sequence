@@ -17,6 +17,7 @@ img{
 #Board{
     display: grid;
     grid-template-columns: repeat(10, 75px);
+    grid-template-rows: repeat(10, 55px);
 
     max-width: 100vh;
     gap: 0px;
@@ -26,8 +27,13 @@ img{
 }
 
 .board-card{
+    position: absolute;
+    top: 0;
+    left: 0;
     margin: 0px;
     border: 2px solid black;
+    width: 40px;
+    height: 60px;
 }
 
 #MyCards{
@@ -55,7 +61,7 @@ img{
     width: 15px; 
     height: 15px;
     display: none;
-    background-color: red;
+    background-color: green;
     border-radius: 50%;
     z-index: 3;
     border: 1px solid black;
@@ -65,8 +71,28 @@ img{
     display: block;
 }
 
+.p1-token-in-sequence{
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* transform: translate(-50%, -50%); Adjust to true center */
+    width: 60px;
+    height: 40px;
+    border: 2px solid black;
+
+    display: none;
+    background-color: lightgreen;
+    z-index: 2;
+    /* border: 1px solid black; */
+}
+
 .cell-content{
     position: relative;
     display: flex;
     justify-content: center;
+    /* border: 2px solid gold; */
+}
+
+.set-border-gold{
+    border: 2 px solid gold;
 }
