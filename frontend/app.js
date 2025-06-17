@@ -1,47 +1,12 @@
-// fetch('http://localhost:5000/api/images')
-//   .then(res => res.json())
-//   .then(images => {
-//     const gallery = document.getElementById('Board');
-//     images.forEach(image => {
-//       const img = document.createElement('img');
-//       img.src = `http://localhost:5000/images/${image}`;
-//       img.alt = image;
-//       img.style.transform = 'rotate(90deg)';
-//       gallery.appendChild(img);
-//     });
-//   })
-//   .catch(error => {
-//     console.error('Error loading images:', error);
-//   });
-
-  const CardSequence = [
-    // Row 1
-    ["sequence.png", "spades_2.svg", "spades_3.svg", "spades_4.svg", "spades_5.svg", "spades_6.svg", "spades_7.svg", "spades_8.svg", "spades_9.svg", "sequence.png"],
-    // Row 2
-    ["clubs_6.svg", "clubs_5.svg", "clubs_4.svg", "clubs_3.svg", "clubs_2.svg", "hearts_ace.svg","hearts_king.svg", "hearts_queen.svg", "hearts_10.svg", "spades_10.svg"],
-    // Row 3
-    ["clubs_7.svg", "spades_ace.svg", "diamonds_2.svg", "diamonds_3.svg", "diamonds_4.svg", "diamonds_5.svg", "diamonds_6.svg", "diamonds_7.svg", "hearts_9.svg", "spades_queen.svg"],
-    // Row 4
-    ["clubs_8.svg", "spades_king.svg", "clubs_6.svg", "clubs_5.svg", "clubs_4.svg", "clubs_3.svg", "clubs_2.svg", "diamonds_8.svg", "hearts_8.svg", "spades_king.svg"],
-    // Row 5
-    ["clubs_9.svg", "spades_queen.svg", "clubs_7.svg", "hearts_6.svg", "hearts_5.svg", "hearts_4.svg", "hearts_ace.svg", "diamonds_9.svg", "hearts_7.svg", "spades_ace.svg"],
-    // Row 6
-    ["clubs_10.svg", "spades_10.svg", "clubs_8.svg", "hearts_7.svg", "hearts_2.svg", "hearts_3.svg", "hearts_king.svg", "diamonds_10.svg", "hearts_6.svg", "diamonds_2.svg"],
-    // Row 7
-    ["clubs_queen.svg", "spades_9.svg", "clubs_9.svg", "hearts_8.svg", "hearts_9.svg", "hearts_10.svg", "hearts_queen.svg", "diamonds_queen.svg", "hearts_5.svg", "diamonds_3.svg"],
-    // Row 8
-    ["clubs_king.svg", "spades_8.svg", "clubs_10.svg", "clubs_queen.svg", "clubs_king.svg", "clubs_ace.svg", "diamonds_ace.svg", "diamonds_king.svg", "hearts_4.svg", "diamonds_4.svg"],
-    // Row 9
-    ["clubs_ace.svg", "spades_7.svg", "spades_6.svg", "spades_5.svg", "spades_4.svg", "spades_3.svg", "spades_2.svg", "hearts_2.svg", "hearts_3.svg", "diamonds_5.svg"],
-    // Row 10
-    ["sequence.png", "diamonds_ace.svg", "diamonds_king.svg", "diamonds_queen.svg", "diamonds_10.svg", "diamonds_9.svg", "diamonds_8.svg", "diamonds_7.svg", "diamonds_6.svg", "sequence.png"],
-  ];
+import { CardSequence } from "./card-sequence.js";
 
 const twoEyedJacks = ["diamonds_jack.svg", "clubs_jack.svg"];
 const oneEyedJacks = [];
 const sequenceNamedCells = [[0,0],[0,9],[9,0],[9,9]];
 let isTwoEyedJackSelected = false;
 let currentTwoEyedJackIndex = -1;
+const socket = io();
+
 
   const board = document.getElementById('Board');
   CardSequence.forEach((row,rowIndex) => {
@@ -83,112 +48,8 @@ let currentTwoEyedJackIndex = -1;
   return array;
 }
 
-  let deck = [
-  "diamonds_jack.svg",
-  "diamonds_jack.svg",
-  "spades_2.svg",
-  "spades_3.svg",
-  "spades_4.svg",
-  "spades_5.svg",
-  "spades_6.svg",
-  "spades_7.svg",
-  "spades_8.svg",
-  "spades_9.svg",
-  "clubs_jack.svg",
-  "clubs_jack.svg",
-  "clubs_6.svg",
-  "clubs_5.svg",
-  "clubs_4.svg",
-  "clubs_3.svg",
-  "clubs_2.svg",
-  "hearts_ace.svg",
-  "hearts_king.svg",
-  "hearts_queen.svg",
-  "hearts_10.svg",
-  "spades_10.svg",
-  "clubs_7.svg",
-  "spades_ace.svg",
-  "diamonds_2.svg",
-  "diamonds_3.svg",
-  "diamonds_4.svg",
-  "diamonds_5.svg",
-  "diamonds_6.svg",
-  "diamonds_7.svg",
-  "hearts_9.svg",
-  "spades_queen.svg",
-  "clubs_8.svg",
-  "spades_king.svg",
-  "clubs_6.svg",
-  "clubs_5.svg",
-  "clubs_4.svg",
-  "clubs_3.svg",
-  "clubs_2.svg",
-  "diamonds_8.svg",
-  "hearts_8.svg",
-  "spades_king.svg",
-  "clubs_9.svg",
-  "spades_queen.svg",
-  "clubs_7.svg",
-  "hearts_6.svg",
-  "hearts_5.svg",
-  "hearts_4.svg",
-  "hearts_ace.svg",
-  "diamonds_9.svg",
-  "hearts_7.svg",
-  "spades_ace.svg",
-  "clubs_10.svg",
-  "spades_10.svg",
-  "clubs_8.svg",
-  "hearts_7.svg",
-  "hearts_2.svg",
-  "hearts_3.svg",
-  "hearts_king.svg",
-  "diamonds_10.svg",
-  "hearts_6.svg",
-  "diamonds_2.svg",
-  "clubs_queen.svg",
-  "spades_9.svg",
-  "clubs_9.svg",
-  "hearts_8.svg",
-  "hearts_9.svg",
-  "hearts_10.svg",
-  "hearts_queen.svg",
-  "diamonds_queen.svg",
-  "hearts_5.svg",
-  "diamonds_3.svg",
-  "clubs_king.svg",
-  "spades_8.svg",
-  "clubs_10.svg",
-  "clubs_queen.svg",
-  "clubs_king.svg",
-  "clubs_ace.svg",
-  "diamonds_ace.svg",
-  "diamonds_king.svg",
-  "hearts_4.svg",
-  "diamonds_4.svg",
-  "clubs_ace.svg",
-  "spades_7.svg",
-  "spades_6.svg",
-  "spades_5.svg",
-  "spades_4.svg",
-  "spades_3.svg",
-  "spades_2.svg",
-  "hearts_2.svg",
-  "hearts_3.svg",
-  "diamonds_5.svg",
-  "hearts_jack.svg",
-  "hearts_jack.svg",
-  "diamonds_ace.svg",
-  "diamonds_king.svg",
-  "diamonds_queen.svg",
-  "diamonds_10.svg",
-  "diamonds_9.svg",
-  "diamonds_8.svg",
-  "diamonds_7.svg",
-  "diamonds_6.svg",
-  "spades_jack.svg",
-  "spades_jack.svg",
-];
+import { cdeck } from "./deck.js";
+let deck = cdeck;
 
 deck = shuffleArray(deck);
 let myCards = [];
@@ -327,8 +188,8 @@ function renderBoard() {
 
 }
 
-// let p1Slots = [];
-let p1Slots = [[0,1],[0,2],[0,3] ];
+let p1Slots = [];
+//let p1Slots = [[0,1],[0,2],[0,3] ];
 
 function onCardSelection(selectedRowIndex, selectedColumnIndex) {
   if (!isTwoEyedJackSelected) {
